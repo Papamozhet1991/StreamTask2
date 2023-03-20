@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
@@ -15,5 +16,30 @@ public class Main {
                     Education.values()[new Random().nextInt(Education.values().length)])
             );
         }
+
+        long count = persons.stream()
+                .filter(s -> s.getAge() < 18)
+                .count();
+        System.out.println("Количество несовершеннолетних людей - " + count);
+
+        List <String> armyMen = persons.stream()
+                .filter(sex -> sex.getSex() == Sex.MAN)
+                .filter(age -> age.getAge() >= 18 && age.getAge() <= 27)
+                .map(person -> person.getFamily())
+                .collect(Collectors.toList());
+        System.out.println("Потенциальные призывники: " + armyMen);
+
+        List <Person> jobable = persons.stream()
+                .filter(education -> education.getEducation() == Education.HIGHER)
+                .filter(age -> age.getAge() >= 18)
+                .filter(person -> (person.getAge() < 60 && person.getSex() == Sex.WOMAN) ||
+                        (person.getAge() < 65 && person.getSex() == Sex.MAN))
+                .sorted(Comparator.comparing(person -> person.getFamily()))
+                .collect(Collectors.toList());
+
+        for (Person s: jobable) {
+           System.out.println(s);
+        }
+
     }
 }
